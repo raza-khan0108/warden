@@ -1,13 +1,37 @@
-warden/
-├── .github/workflows/ci.yml
-├── backend/
-│   ├── alembic/ (env.py, versions/0001_init.py)
-│   ├── app/
-│   │   ├── main.py, config.py, db.py, models.py, schemas.py
-│   │   ├── api/ (health.py, repos.py, deps.py)
-│   │   └── services/ (github.py, files.py)
-│   ├── tests/
-│   ├── Dockerfile, requirements.txt, pyproject.toml
-├── frontend/ (Next.js: app/page.tsx, lib/api.ts)
-├── docs/architecture.md
-├── docker-compose.yml, .env.example, README.md
+# Warden
+
+AI software engineering command center: index GitHub repos, chat over code, review PRs.
+
+## Quick start
+
+```bash
+cp .env.example .env
+docker compose up -d db
+docker compose ps        # db should be "healthy"
+```
+
+Check pgvector is installed:
+
+```bash
+docker compose exec db psql -U warden -d warden -c "SELECT extname, extversion FROM pg_extension;"
+```
+
+You should see a `vector` row.
+
+## Common commands
+
+| Task | Command |
+|------|---------|
+| Start DB | `docker compose up -d db` |
+| Stop DB | `docker compose down` |
+| Open psql | `docker compose exec db psql -U warden -d warden` |
+| View logs | `docker compose logs -f db` |
+| Wipe all data | `docker compose down -v` |
+
+## Docs
+
+- [Architecture](docs/architecture.md)
+
+## License
+
+Apache 2.0
