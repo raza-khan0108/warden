@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     app_name: str = "Warden"
     cors_origins: list[str] = ["http://localhost:3000"]
     database_url: str = "postgresql+psycopg://warden:warden@localhost:5432/warden"
+    github_token: str = ""
 
 
 settings = Settings()
