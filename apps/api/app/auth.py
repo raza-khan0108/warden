@@ -59,23 +59,23 @@ def decode_access_token(token: str) -> dict[str, Any]:
     """Decode and validate a JWT access token."""
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
-    except jwt.ExpiredSignatureError:
+    except jwt.ExpiredSignatureError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token expired",
             headers={"WWW-Authenticate": "Bearer"},
-        )
-    except jwt.InvalidTokenError:
+        ) from e
+    except jwt.InvalidTokenError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from e
 
 
 async def get_current_user(
     token: str | None = None,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> CurrentUser:
     """FastAPI dependency: extract current user from JWT token."""
     if not token:
@@ -88,7 +88,7 @@ async def get_current_user(
     payload = decode_access_token(token)
     user_id = payload.get("user_id")
     org_id = payload.get("org_id")
-    role = payload.get("role")
+    role = payload.get("role", "member")
 
     if not user_id or not org_id:
         raise HTTPException(

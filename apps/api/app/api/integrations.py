@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.crypto import get_encryption_manager, EncryptionManager
+from app.crypto import EncryptionManager, get_encryption_manager
 from app.db import get_db
 from app.models import Integration, Organization
 from app.schemas import (
@@ -35,9 +35,11 @@ async def github_install_url() -> dict[str, str]:
 async def github_install(
     installation_id: Annotated[int, Query()],
     setup_action: Annotated[str, Query()] = "created",
-    org_id: Annotated[int, Query()] = None,
-    db: Annotated[Session, Depends(get_db)] = None,
-    encryption: Annotated[EncryptionManager, Depends(get_encryption_manager)] = None,
+    org_id: Annotated[int | None, Query()] = None,
+    db: Annotated[Session, Depends(get_db)] = Depends(get_db),
+    encryption: Annotated[
+        EncryptionManager, Depends(get_encryption_manager)
+    ] = Depends(get_encryption_manager),
 ) -> GitHubAppInstallResponse:
     """Handle GitHub App installation callback.
 
@@ -111,7 +113,7 @@ async def github_install(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to fetch GitHub App token: {str(e)}",
-        )
+        ) from e
 
 
 @router.get("/{org_id}")

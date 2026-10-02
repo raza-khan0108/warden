@@ -82,9 +82,7 @@ jobs:
       - name: Run alembic migrations
         env:
           DATABASE_URL: postgresql+psycopg://warden:warden@localhost:5432/warden
-        run: |
-          cd apps/api
-          alembic upgrade head
+        run: alembic upgrade head
 
       - name: Run pytest
         env:

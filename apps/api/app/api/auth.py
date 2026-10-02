@@ -15,7 +15,7 @@ from app.auth import (
 )
 from app.config import settings
 from app.db import get_db
-from app.schemas import TokenResponse
+from app.schemas import OrganizationResponse, TokenResponse, UserResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -94,12 +94,12 @@ async def github_callback(
 
         return TokenResponse(
             access_token=access_token,
-            user=user,
-            organization=primary_org,
+            user=UserResponse.model_validate(user),
+            organization=OrganizationResponse.model_validate(primary_org),
         )
 
     except httpx.HTTPError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"GitHub API error: {str(e)}",
-        )
+        ) from e
