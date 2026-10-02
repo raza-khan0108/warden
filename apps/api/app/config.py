@@ -13,9 +13,11 @@ class Settings(BaseSettings):
     github_token: str = ""
     github_app_id: str = ""
     github_app_private_key: str = ""
+    github_app_client_secret: str = ""
     jwt_secret: str = "dev-secret-key-change-in-production"
     jwt_algorithm: str = "HS256"
     jwt_expiry_hours: int = 24
+    encryption_key: str = "5qW0zXgJ_L4JnHzKpQtV9m2-bE8cDfRsZ0xY1pQrT2s="
 
 
 settings = Settings()
