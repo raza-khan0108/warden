@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "warden-mcp-gateway"
+version = "0.1.0"
+description = "MCP server gateway and policy engine for Warden"
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.25",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]

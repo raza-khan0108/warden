@@ -1,6 +1,10 @@
+import sys
+from pathlib import Path
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "apps" / "api"))
 
 import app.models  # noqa: F401  (registers tables on Base.metadata)
 from alembic import context
