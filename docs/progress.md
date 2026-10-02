@@ -5,8 +5,8 @@ do that one task, check it off, stop.
 
 ## Week 1 — Foundations
 - [x] Monorepo layout (apps/web, apps/api, apps/worker, packages/)
-- [ ] Docker Compose: Postgres (pgvector), Redis, MinIO
-- [ ] GitHub login + orgs + roles
+- [x] Docker Compose: Postgres (pgvector), Redis, MinIO
+- [x] GitHub login + orgs + roles
 - [ ] GitHub App creation and install flow
 - [ ] CI pipeline (lint, type-check, test on push)
 
@@ -47,3 +47,5 @@ do that one task, check it off, stop.
 ## Notes / deviations from plan.md
 
 - 2026-10-02: Reorganized backend/ → apps/api/, moved alembic to root, added Docker services (Redis, MinIO) to docker-compose.yml
+- 2026-10-02: Completed Docker Compose setup: fixed healthchecks, added comprehensive .env.example, created DOCKER_SETUP.md guide
+- 2026-10-02: GitHub login implemented with SQLAlchemy models, JWT auth, GitHub OAuth callback, and token validation. All DB queries filter by org_id per non-negotiable convention

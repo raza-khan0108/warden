@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     database_url: str = "postgresql+psycopg://warden:warden@localhost:5432/warden"
     github_token: str = ""
+    github_app_id: str = ""
+    github_app_private_key: str = ""
+    jwt_secret: str = "dev-secret-key-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expiry_hours: int = 24
 
 
 settings = Settings()
