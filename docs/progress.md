@@ -11,7 +11,7 @@ do that one task, check it off, stop.
 - [x] CI pipeline (lint, type-check, test on push)
 
 ## Week 2 — Ingestion
-- [ ] Repo fetch/clone on install
+- [x] Repo fetch/clone on install
 - [ ] Code-aware chunking (tree-sitter)
 - [ ] Issue/PR ingestion
 - [ ] Embedding generation into pgvector
@@ -51,3 +51,4 @@ do that one task, check it off, stop.
 - 2026-10-02: GitHub login implemented with SQLAlchemy models, JWT auth, GitHub OAuth callback, and token validation. All DB queries filter by org_id per non-negotiable convention
 - 2026-10-02: GitHub App install flow: added integrations table migration, encrypted credential storage (Fernet), GET /integrations/github/install-url, POST /integrations/github/install webhook, list/get integration endpoints, frontend component to trigger install
 - 2026-10-02: CI pipeline: GitHub Actions workflow with ruff lint, pyright type-check, pytest on PostgreSQL, and Next.js build. Fixed linting issues (unused imports, line length). Week 1 complete.
+- 2026-10-02: Repo fetch on install: created Document, Chunk, IngestionJob models; added migration 0004; IngestionService to fetch repo files from GitHub API and create document records; POST /ingestion/repos/{org_id}/{repo_id}/sync endpoint; GET /ingestion/repos/{org_id}/{repo_id}/status endpoint; POST /integrations/{org_id}/github/add-repositories endpoint to list and sync repositories after GitHub App install. Renamed chunk.metadata → chunk.chunk_metadata to avoid SQLAlchemy reserved name conflict.

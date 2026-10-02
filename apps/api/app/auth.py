@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Annotated, Any
 
 import httpx
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -74,17 +74,18 @@ def decode_access_token(token: str) -> dict[str, Any]:
 
 
 async def get_current_user(
-    token: str | None = None,
+    authorization: Annotated[str | None, Header()] = None,
     db: Session = Depends(get_db),  # noqa: B008
 ) -> CurrentUser:
-    """FastAPI dependency: extract current user from JWT token."""
-    if not token:
+    """FastAPI dependency: extract current user from JWT token in Authorization header."""
+    if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    token = authorization[7:]
     payload = decode_access_token(token)
     user_id = payload.get("user_id")
     org_id = payload.get("org_id")
