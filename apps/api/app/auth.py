@@ -103,7 +103,12 @@ async def get_current_user(
             detail="User not found",
         )
 
-    return CurrentUser(id=user_id, github_login=user.github_login, organization_id=org_id, role=role)
+    return CurrentUser(
+        id=user_id,
+        github_login=user.github_login,
+        organization_id=org_id,
+        role=role,
+    )
 
 
 def upsert_user(db: Session, github_user: dict[str, Any]) -> User:

@@ -29,4 +29,8 @@ def health_db(db: Session = Depends(get_db)) -> dict:
 def health_protected(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
 ) -> dict:
-    return {"status": "ok", "user": current_user.github_login, "org_id": current_user.organization_id}
+    return {
+        "status": "ok",
+        "user": current_user.github_login,
+        "org_id": current_user.organization_id,
+    }
