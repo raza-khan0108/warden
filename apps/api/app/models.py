@@ -107,3 +107,19 @@ class OrgMembership(Base):
 
     user: Mapped[User] = relationship(back_populates="memberships")
     organization: Mapped[Organization] = relationship(back_populates="memberships")
+
+
+class Integration(Base):
+    __tablename__ = "integrations"
+    __table_args__ = (UniqueConstraint("organization_id", "type", name="uq_org_integration_type"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    organization_id: Mapped[int] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE"), index=True
+    )
+    type: Mapped[str] = mapped_column(String(50), index=True)
+    installation_id: Mapped[int] = mapped_column(Integer)
+    encrypted_creds: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    organization: Mapped[Organization] = relationship()

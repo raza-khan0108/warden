@@ -59,3 +59,27 @@ class CurrentUser(BaseModel):
     github_login: str
     organization_id: int
     role: str
+
+
+class IntegrationBase(BaseModel):
+    type: str
+    installation_id: int
+
+
+class IntegrationResponse(IntegrationBase):
+    id: int
+    organization_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class GitHubAppInstallRequest(BaseModel):
+    installation_id: int
+    setup_action: str
+
+
+class GitHubAppInstallResponse(BaseModel):
+    success: bool
+    message: str
