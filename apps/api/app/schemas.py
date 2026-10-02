@@ -83,3 +83,35 @@ class GitHubAppInstallRequest(BaseModel):
 class GitHubAppInstallResponse(BaseModel):
     success: bool
     message: str
+
+
+class RepositoryResponse(BaseModel):
+    id: int
+    organization_id: int
+    full_name: str
+    owner: str
+    name: str
+    default_branch: str
+    description: str | None
+    html_url: str
+    status: str
+    last_synced_at: datetime | None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class IngestionJobResponse(BaseModel):
+    id: int
+    organization_id: int
+    repository_id: int
+    kind: str
+    status: str
+    attempts: int
+    error: str | None
+    created_at: datetime
+    finished_at: datetime | None
+
+    class Config:
+        from_attributes = True

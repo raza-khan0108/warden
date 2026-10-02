@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Annotated, Any
 
 import httpx
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -59,36 +59,37 @@ def decode_access_token(token: str) -> dict[str, Any]:
     """Decode and validate a JWT access token."""
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
-    except jwt.ExpiredSignatureError:
+    except jwt.ExpiredSignatureError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token expired",
             headers={"WWW-Authenticate": "Bearer"},
-        )
-    except jwt.InvalidTokenError:
+        ) from e
+    except jwt.InvalidTokenError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from e
 
 
 async def get_current_user(
-    token: str | None = None,
-    db: Session = Depends(get_db),
+    authorization: Annotated[str | None, Header()] = None,
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> CurrentUser:
-    """FastAPI dependency: extract current user from JWT token."""
-    if not token:
+    """FastAPI dependency: extract current user from JWT token in Authorization header."""
+    if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    token = authorization[7:]
     payload = decode_access_token(token)
     user_id = payload.get("user_id")
     org_id = payload.get("org_id")
-    role = payload.get("role")
+    role = payload.get("role", "member")
 
     if not user_id or not org_id:
         raise HTTPException(
@@ -103,7 +104,12 @@ async def get_current_user(
             detail="User not found",
         )
 
-    return CurrentUser(id=user_id, github_login=user.github_login, organization_id=org_id, role=role)
+    return CurrentUser(
+        id=user_id,
+        github_login=user.github_login,
+        organization_id=org_id,
+        role=role,
+    )
 
 
 def upsert_user(db: Session, github_user: dict[str, Any]) -> User:

@@ -17,7 +17,7 @@ def health() -> dict:
 
 
 @router.get("/db")
-def health_db(db: Session = Depends(get_db)) -> dict:
+def health_db(db: Session = Depends(get_db)) -> dict:  # noqa: B008
     db.execute(text("SELECT 1"))
     has_vector = db.execute(
         text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")
@@ -29,4 +29,8 @@ def health_db(db: Session = Depends(get_db)) -> dict:
 def health_protected(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
 ) -> dict:
-    return {"status": "ok", "user": current_user.github_login, "org_id": current_user.organization_id}
+    return {
+        "status": "ok",
+        "user": current_user.github_login,
+        "org_id": current_user.organization_id,
+    }
